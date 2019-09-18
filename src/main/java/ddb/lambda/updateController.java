@@ -24,11 +24,10 @@ public class updateController {
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
         DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
 
-            ArrayList<History> historyArrayList = new ArrayList<>();
-            task.setHistoryArrayList(historyArrayList);
-            task.setNewHistory(new History("Task: " + task.getDescription() + " was added"));
-            Task t = ddbMapper.load(Task.class, task.getId());
-            ddbMapper.save(task);
+        ArrayList<History> historyArrayList = new ArrayList<>();
+        task.setHistoryArrayList(historyArrayList);
+        task.setNewHistory(new History("Task: " + task.getDescription() + " was added"));
+        ddbMapper.save(task);
 
         return task;
     }
