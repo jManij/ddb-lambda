@@ -1,5 +1,4 @@
-# ddb-lambda
-## Lab: Lambda with Dynamo
+# Lab: Lambda with Dynamo
 
 ## Overview
 - The lab uses API gateways which is an entrypoint of trigger to lambda functions.
