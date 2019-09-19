@@ -51,4 +51,12 @@ public class updateController {
         return oldTask;
     }
 
+    public String deleteTask(String ID, Context context) {
+        final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
+        DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
+        Task task = ddbMapper.load(Task.class, ID);
+        ddbMapper.delete(task);
+        return task.getDescription() + "[id: " + task.getId() + "] has been deleted successfully!";
+    }
+
 }
