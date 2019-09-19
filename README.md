@@ -6,6 +6,7 @@
 - Lambda functions: save a new task, update a task, delete a task.
 
 ## How To Test
+ *Use postman and provide similar parameters when testing. 
 ###### Create a new task
   * API GATEWAY: https://lltrgze6rl.execute-api.us-west-2.amazonaws.com/dev/task
   * Method: POST
