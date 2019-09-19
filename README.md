@@ -13,9 +13,13 @@
           * {
               "title" : "New title",
               "description" : "new description",
+              
               "status" : "Available",
+              
               "assignee" : "New assignee"
+              
               }
+              
    * Response: JSON object
    
 ###### Update a new task        
