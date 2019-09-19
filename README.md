@@ -11,7 +11,7 @@
   * Method: POST
   * PARAMS: JSON OBJECT
   
-          * 
+          
           {
           
               "title" : "New title",
@@ -30,7 +30,7 @@
   * API GATEWAY: https://phv3cxw8ud.execute-api.us-west-2.amazonaws.com/dev/updatetask
   * Method: PUT
   * PARAMS: JSON OBJECT
-          * 
+           
           {
           
               "id" : new_id_that_you_just_created_from_create_a_new_task
