@@ -10,8 +10,12 @@
   * API GATEWAY: https://lltrgze6rl.execute-api.us-west-2.amazonaws.com/dev/task
   * Method: POST
   * PARAMS: JSON OBJECT
-          * {
+  
+          * 
+          {
+          
               "title" : "New title",
+              
               "description" : "new description",
               
               "status" : "Available",
@@ -26,20 +30,30 @@
   * API GATEWAY: https://phv3cxw8ud.execute-api.us-west-2.amazonaws.com/dev/updatetask
   * Method: PUT
   * PARAMS: JSON OBJECT
-          * {
+          * 
+          {
+          
               "id" : new_id_that_you_just_created_from_create_a_new_task
+              
               "title" : "New title changed",
+              
               "description" : "new description changed",
+              
               "status" : "Assigned",
+              
               "assignee" : "New assignee changed"
+              
               }
+              
    * Response: JSON object
    
 ###### Delete a task        
   * API GATEWAY: https://lpce1u7wt1.execute-api.us-west-2.amazonaws.com/dev/deletetask
   * Method: DELETE
   * PARAMS: STRING ID
+  
           * ID_that_you_want_to_delete
+          
    * Response: String 
               
 ## Credits and contributions
