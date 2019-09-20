@@ -55,9 +55,27 @@
           * ID_that_you_want_to_delete
           
    * Response: String 
+   
+   ### FrontEnd Link 
+   * GET /tasks
+      * https://04kiiaovkl.execute-api.us-west-2.amazonaws.com/dev/tasks
+      
+   * GET /tasks/{user}
+      * https://g6tbnjg2s3.execute-api.us-west-2.amazonaws.com/dev/task/%7Buser%7D
+      
+   * POST /tasks
+      * https://lltrgze6rl.execute-api.us-west-2.amazonaws.com/dev/task
+      
+   * PUT /tasks/{id}/state
+      * https://phv3cxw8ud.execute-api.us-west-2.amazonaws.com/dev/tasks/%7Bid%7D/state
+      
+   * PUT /tasks/{id}/assign/{assignee}
+      * https://7a6kr231di.execute-api.us-west-2.amazonaws.com/dev/tasks/{id}/assign/{assignee}
+      
               
 ## Credits and contributions
   * ### Manish
   * ### Roman
-
+  * ### Jack
+  * ### Fabian
 
