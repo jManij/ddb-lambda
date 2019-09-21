@@ -8,24 +8,21 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.google.gson.Gson;
 import ddb.lambda.Models.History;
 import ddb.lambda.Models.States;
 import ddb.lambda.Models.Task;
-import org.checkerframework.common.reflection.qual.GetMethod;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class updateController {
-
-    private DynamoDB dynamoDb;
-    private String DYNAMODB_TABLE_NAME = "task";
-    private Regions REGION = Regions.US_WEST_2;
-
 
     public List<Task> getAllTasks(Context context) {
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
@@ -36,15 +33,53 @@ public class updateController {
     }
 
 
-    public List<Task> getTaskForAUser(String username) {
+
+    public APIGatewayProxyResponseEvent assign(APIGatewayProxyRequestEvent event) {
+
+        final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
+        DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
+        StringBuilder id = new StringBuilder();
+        StringBuilder assignee = new StringBuilder();
+
+        for (Map.Entry<String,String> entry : event.getPathParameters().entrySet()) {
+            if (entry.getKey() == "id") {
+                id.append(entry.getValue());
+            } else {
+                assignee.append(entry.getValue());
+            }
+        }
+        Task task = ddbMapper.load(Task.class, id.toString());
+        task.setAssignee(assignee.toString());
+        task.setStatus("Assigned");
+        task.getHistoryArrayList().add(new History(assignee + " assigned to the task"));
+        ddbMapper.save(task);
+
+        Gson gson = new Gson();
+        APIGatewayProxyResponseEvent responseEvent = new APIGatewayProxyResponseEvent();
+        responseEvent.setBody(gson.toJson(task));
+
+
+        return responseEvent;
+
+    }
+
+
+
+    public APIGatewayProxyResponseEvent getTaskForAUser(APIGatewayProxyRequestEvent event) {
 
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
         DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
 
+        StringBuilder path = new StringBuilder();
+
+        for (Map.Entry<String,String> entry : event.getPathParameters().entrySet())
+            path.append(entry.getValue());
+
+
 
         HashMap<String, AttributeValue> expressionAttributeValues =
                 new HashMap<String, AttributeValue>();
-        expressionAttributeValues.put(":val", new AttributeValue().withS(username));
+        expressionAttributeValues.put(":val", new AttributeValue().withS(path.toString()));
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression().
                 withFilterExpression("assignee = :val")
                 .withExpressionAttributeValues(expressionAttributeValues);
@@ -52,7 +87,12 @@ public class updateController {
 
         List<Task> iList = ddbMapper.scan(Task.class, scanExpression);
 
-        return iList;
+        Gson gson = new Gson();
+        APIGatewayProxyResponseEvent responseEvent = new APIGatewayProxyResponseEvent();
+        responseEvent.setBody(gson.toJson(iList));
+
+
+        return responseEvent;
 
     }
 
@@ -60,21 +100,37 @@ public class updateController {
 
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
         DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
-
+        Task t = new Task();
+        if (task.getAssignee() != null) {
+            t.setAssignee(task.getAssignee());
+            t.setStatus("Assigned");
+        } else {
+            t.setAssignee("");
+            t.setStatus("Available");
+        }
+        t.setTitle(task.getTitle());
+        t.setDescription(task.getDescription());
         ArrayList<History> historyArrayList = new ArrayList<>();
-        task.setHistoryArrayList(historyArrayList);
-        task.setNewHistory(new History("Task: " + task.getDescription() + " was added"));
-        ddbMapper.save(task);
+        t.setHistoryArrayList(historyArrayList);
+        t.setNewHistory(new History("Task: " + t.getDescription() + " was added"));
+        ddbMapper.save(t);
 
-        return task;
+
+        return t;
     }
 
-    public Task updateTask(String id, Context context) {
+
+
+    public APIGatewayProxyResponseEvent updateTask(APIGatewayProxyRequestEvent event) {
 
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
         DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
+        StringBuilder path = new StringBuilder();
 
-        Task oldTask = ddbMapper.load(Task.class, id);
+        for (Map.Entry<String,String> entry : event.getPathParameters().entrySet())
+            path.append(entry.getValue());
+
+        Task oldTask = ddbMapper.load(Task.class, path.toString());
         StringBuilder message = new StringBuilder("Task advanced from " + oldTask.getStatus()); // For displaying message
         oldTask.setStatus(States.changeState(oldTask.getStatus())); //Changes the current status
         message.append(" to "+ oldTask.getStatus());
@@ -82,15 +138,33 @@ public class updateController {
         oldTask.getHistoryArrayList().add(new History(message.toString()));
         ddbMapper.save(oldTask);
 
-        return oldTask;
+        Gson gson = new Gson();
+        APIGatewayProxyResponseEvent responseEvent = new APIGatewayProxyResponseEvent();
+        responseEvent.setBody(gson.toJson(oldTask));
+
+
+        return responseEvent;
     }
 
-    public String deleteTask(String ID, Context context) {
+    public APIGatewayProxyResponseEvent deleteTask(APIGatewayProxyRequestEvent event) {
         final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
         DynamoDBMapper ddbMapper = new DynamoDBMapper(ddb);
-        Task task = ddbMapper.load(Task.class, ID);
+
+        StringBuilder ID = new StringBuilder();
+
+        for (Map.Entry<String,String> entry : event.getPathParameters().entrySet())
+            ID.append(entry.getValue());
+
+        Task task = ddbMapper.load(Task.class, ID.toString());
+        Gson gson = new Gson();
+        APIGatewayProxyResponseEvent responseEvent = new APIGatewayProxyResponseEvent();
+        responseEvent.setBody(gson.toJson("The following object has been deleted: \n" +
+                "ID: " + task.getId() +
+                " \n Task Name: " + task.getTitle()));
         ddbMapper.delete(task);
-        return task.getDescription() + "[id: " + task.getId() + "] has been deleted successfully!";
+
+        return  responseEvent;
+
     }
 
 
