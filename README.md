@@ -50,13 +50,10 @@
   * Response: JSON object
   
 ###### Delete a task        
-  * API GATEWAY: https://lpce1u7wt1.execute-api.us-west-2.amazonaws.com/dev/deletetask
+  * API GATEWAY: https://lpce1u7wt1.execute-api.us-west-2.amazonaws.com/dev/deletetask/{id}
   * Method: DELETE
-  * PARAMS: STRING ID 
-  
-          * ID_that_you_want_to_delete
-          
-   * Response: String 
+  * PARAMS: id of task to be deleted as the URL param          
+  * Response: Status of delte as a String
    
  ### FrontEnd Link 
       
