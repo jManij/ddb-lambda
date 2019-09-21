@@ -2,7 +2,8 @@
 
 ## Overview
 - The lab uses API gateways which is an entrypoint of trigger to lambda functions.
-- Lambda functions: save a new task, update a task, delete a task.
+- Lambda functions: create a new task, get tasks for specific user, save a new task, update a task state,
+  change assignee to the task, delete a task.
 
 ## How To Test
  **Use postman and provide similar parameters when testing.** 
