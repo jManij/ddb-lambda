@@ -1,12 +1,31 @@
-# Lab: Lambda with Dynamo
+# Lab: Lambda with Dynamo (Extended lab 38 & 39)
 
 ## Overview
 - The lab uses API gateways which is an entrypoint of trigger to lambda functions.
 - Lambda functions: create a new task, get tasks for specific user, save a new task, update a task state,
   change assignee to the task, delete a task.
+- Extended lab 38 & 39. 
+- Can subscribe to taskMaster Events
+- Message published to email or text that have signed up to the topics
 
 ## How To Test
  **Use postman and provide similar parameters when testing.** 
+ 
+  ###### Subscibe to the taskMaster using phone number        
+  * API GATEWAY:https://kb76bxe39j.execute-api.us-west-2.amazonaws.com/dev/tasks/subscribe/{phoneNumber}
+  * Method: PUT /tasks/subscribe/{phoneNumber}
+  * PARAMS: "+1XXXXXXXXXX" phone number as the param          
+  * Response: JSON object with Subscription ARN
+  #### NOTE: After signed up, test creating new task from post man to get notification on new task
+  
+  ###### Subscibe to the taskMaster as an admin        
+  * API GATEWAY:https://rptuilwxzh.execute-api.us-west-2.amazonaws.com/dev/tasks/add/{email}
+  * Method: PUT /tasks/add/{email}
+  * PARAMS: "email address" as the param  
+  * Open your email and verify subscription.
+  * Response: JSON object with Subscription ARN
+  #### NOTE: After signed up, test changing the state of the task to get email notification.
+  
  ###### Get All Tasks
   * API GATEWAY: https://04kiiaovkl.execute-api.us-west-2.amazonaws.com/dev/tasks
   * Method: GET           
